@@ -159,9 +159,13 @@ app.post('/upload', upload.single('image'), async (req, res) => {
             requestBody: { role: 'reader', type: 'anyone' },
         });
 
-        // C. Return LOCAL PROXY URL
-        // Pass the backend URL that serves the image
-        const proxyUrl = `http://localhost:${PORT}/image/${fileId}`;
+        // C. Return PROXY URL
+        // Dynamically choose URL based on environment
+        const baseUrl = process.env.NODE_ENV === 'production'
+            ? 'https://rentelme-server.onrender.com'
+            : `http://localhost:${PORT}`;
+
+        const proxyUrl = `${baseUrl}/image/${fileId}`;
 
         res.status(200).json({
             message: 'Uploaded',
